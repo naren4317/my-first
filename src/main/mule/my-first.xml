@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f6dec74e-5e91-491a-9296-1b70b06f46ff" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="fca8260a-4f8f-4f62-bf38-9a30d62de15e" >
+		<http:request-connection host="dummy.restapiexample.com" protocol="HTTPS"/>
+	</http:request-config>
+	<flow name="my-firstFlow" doc:id="a1c99ae7-aba3-45e9-b7fe-f33869586cbc" >
+		<http:listener doc:name="Listener" doc:id="87b01ad4-1f28-4627-9760-b85741ebb443" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="cdb9d9ba-76d6-4bfe-8352-cd38426f96a1" message="REST API consumption started"/>
+		<http:request method="GET" doc:name="Request" doc:id="2f3a9fcb-4a3d-498d-95d9-6367d7523eca" config-ref="HTTP_Request_configuration" path="/api/v1/employees"/>
+		<ee:transform doc:name="Transform Message" doc:id="19ee42de-9490-4650-81e8-49ee232d5f0b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
